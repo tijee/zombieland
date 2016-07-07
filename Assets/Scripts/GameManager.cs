@@ -6,7 +6,7 @@ public class GameManager : MonoBehaviour
 {
 	public static GameManager instance = null;
 
-	public BoardManager boardScript;
+	public BoardManager boardManager;
 
 	private List<Enemy> enemies;
 
@@ -26,14 +26,14 @@ public class GameManager : MonoBehaviour
 		DontDestroyOnLoad (gameObject);
 
 		enemies = new List<Enemy> ();
-		boardScript = GetComponent<BoardManager> ();
+		boardManager = GetComponent<BoardManager> ();
 		InitGame ();
 	}
 
 	void InitGame ()
 	{
-		boardScript.SetupScene ();
-		boardScript.SetupCamera ();
+		boardManager.SetupScene ();
+		boardManager.SetupCamera ();
 	}
 
 	// Update is called every frame.

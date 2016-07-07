@@ -15,6 +15,7 @@ public class BoardManager : MonoBehaviour
 
 	private List<GameObject> outerWalls = new List<GameObject> ();
 	private List <Vector3> randomGridPositions = new List <Vector3> ();
+	private List <Vector3> occupiedPositions = new List <Vector3> ();
 
 	private Transform boardHolder;
 
@@ -34,10 +35,12 @@ public class BoardManager : MonoBehaviour
 					// Floor
 					tileChoice = floorTiles [Random.Range (0, floorTiles.Length)];
 				}
-				GameObject tile = Instantiate (tileChoice, new Vector3 (x, y, 0f), Quaternion.identity) as GameObject;
+				Vector3 position = new Vector3 (x, y, 0f);
+				GameObject tile = Instantiate (tileChoice, position, Quaternion.identity) as GameObject;
 				tile.transform.SetParent (boardHolder);
 				if (outerWall) {
 					outerWalls.Add (tile);
+					occupiedPositions.Add (position);
 				}
 			}
 		}
@@ -72,6 +75,7 @@ public class BoardManager : MonoBehaviour
 			GameObject tileChoice = tiles [Random.Range (0, tiles.Length)];
 			GameObject tile = Instantiate (tileChoice, randomPosition, Quaternion.identity) as GameObject;
 			tile.transform.SetParent (boardHolder);
+			occupiedPositions.Add (randomPosition);
 		}
 	}
 
@@ -120,5 +124,31 @@ public class BoardManager : MonoBehaviour
 		int margin = 2;
 		Camera.main.transform.position = new Vector3 (columns / 2, rows / 2, -10);
 		Camera.main.orthographicSize = Mathf.Max (columns, rows) / 2 + margin;
+	}
+
+	// Adds the given position to the list of enemy positions.
+	public void AddEnemyPosition (Vector3 position)
+	{
+		lock (occupiedPositions) {
+			if (!occupiedPositions.Contains (position)) {
+				occupiedPositions.Add (position);
+			}
+		}
+	}
+
+	// Removes the given position from the list of enemy positions.
+	public void RemoveEnemyPosition (Vector3 position)
+	{
+		lock (occupiedPositions) {
+			occupiedPositions.Remove (position);
+		}
+	}
+
+	// Returns true if the given position is occupied by a wall or an enemy, false otherwise.
+	public bool isFreePosition (Vector3 position)
+	{
+		lock (occupiedPositions) {
+			return !occupiedPositions.Contains (position);
+		}
 	}
 }
