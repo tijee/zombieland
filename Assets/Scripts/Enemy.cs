@@ -10,22 +10,26 @@ public class Enemy : MonoBehaviour
 	public float defaultRotation = 90;
 	// Time in idle state in seconds
 	public float idleTime = 2f;
-
 	public LayerMask blockingLayer;
-
 	// Move directions, from -1 to 1
 	private int xDir;
 	private int yDir;
 	private bool idle = false;
 	private Vector3 targetPosition;
-
 	private Animator animator;
+	// Audio
+	public AudioClip[] audioClips;
+	// Sound frequency in seconds
+	public float soundMinDelay = 5f;
+	public float soundMaxDelay = 30f;
+	private float nextSoundTime;
 
 	void Start ()
 	{
 		animator = GetComponent <Animator> ();
 		GameManager.instance.AddEnemy (this);
 		targetPosition = transform.position;
+		ScheduleNextSound ();
 	}
 
 	void Update ()
@@ -50,6 +54,9 @@ public class Enemy : MonoBehaviour
 				// Move towards the target position.
 				Move ();
 			}
+		}
+		if (Time.time >= nextSoundTime) {
+			PlaySound ();
 		}
 	}
 
@@ -157,5 +164,19 @@ public class Enemy : MonoBehaviour
 	private void SetMoving (bool moving)
 	{
 		animator.SetBool ("moving", moving);
+	}
+
+	// Plays a random sound.
+	private void PlaySound ()
+	{
+		SoundManager.instance.PlayEnemySound (audioClips);
+		ScheduleNextSound ();
+	}
+
+	// Updates the 'nextSoundTime' variable: the time when the next sound will be played.
+	private void ScheduleNextSound ()
+	{
+		float randomDelayUntilNextSound = Random.Range (soundMinDelay, soundMaxDelay + 1);
+		nextSoundTime = Time.time + randomDelayUntilNextSound;
 	}
 }

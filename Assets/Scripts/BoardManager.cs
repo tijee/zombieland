@@ -16,6 +16,7 @@ public class BoardManager : MonoBehaviour
 	private List<GameObject> outerWalls = new List<GameObject> ();
 	private List <Vector3> randomGridPositions = new List <Vector3> ();
 	private List <Vector3> occupiedPositions = new List <Vector3> ();
+	private Vector3 exitPosition;
 
 	private Transform boardHolder;
 
@@ -95,12 +96,11 @@ public class BoardManager : MonoBehaviour
 			new Vector3 (rows, columns),
 			new Vector3 (columns, -1)
 		};
-		Vector3 exitPosition;
 		do {
 			index = Random.Range (0, outerWalls.Count);
 			GameObject exitOuterWall = outerWalls [index];
 			exitPosition = exitOuterWall.transform.position;
-		} while (corners.Contains (exitPosition));
+		} while (corners.Contains (exitPosition));	// Don't use corners as Exit
 		Destroy (outerWalls [index]);
 		GameObject exitFloor = floorTiles [Random.Range (0, floorTiles.Length)];
 		GameObject exitTile = Instantiate (exitFloor, exitPosition, Quaternion.identity) as GameObject;
@@ -144,11 +144,11 @@ public class BoardManager : MonoBehaviour
 		}
 	}
 
-	// Returns true if the given position is occupied by a wall or an enemy, false otherwise.
+	// Returns true if the given position is occupied by a wall, an enemy, or the exit. Returns false otherwise.
 	public bool isFreePosition (Vector3 position)
 	{
 		lock (occupiedPositions) {
-			return !occupiedPositions.Contains (position);
+			return position != exitPosition && !occupiedPositions.Contains (position);
 		}
 	}
 }
