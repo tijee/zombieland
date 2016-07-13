@@ -144,7 +144,7 @@ public class BoardManager : MonoBehaviour
 		}
 	}
 
-	// Returns true if the given position is occupied by a wall, an enemy, or the exit. Returns false otherwise.
+	// Returns true if the given position is not occupied by a wall, an enemy, or the exit. Returns false otherwise.
 	public bool isFreePosition (Vector3 position)
 	{
 		lock (occupiedPositions) {

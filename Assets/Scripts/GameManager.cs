@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
 	public static GameManager instance = null;
 
 	public BoardManager boardManager;
+	public GameObject player;
 
 	private List<Enemy> enemies;
 
