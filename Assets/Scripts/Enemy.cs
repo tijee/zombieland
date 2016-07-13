@@ -62,7 +62,7 @@ public class Enemy : MonoBehaviour
 
 	// Tests whether the Enemy can move toward its target position.
 	// It can not move to an occupied position.
-	// It can not move to a position block by the blocking layer.
+	// It can not move to a position blocked by the blocking layer.
 	private bool CanMoveTo (Vector3 position)
 	{
 		bool canMove = GameManager.instance.boardManager.isFreePosition (position);
